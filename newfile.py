@@ -1,6 +1,11 @@
 from flask import (
-    Flask, request, redirect, url_for,
-    session, send_from_directory
+    Flask,
+    render_template_string,
+    request,
+    redirect,
+    url_for,
+    session,
+    send_from_directory
 )
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
