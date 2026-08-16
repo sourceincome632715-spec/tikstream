@@ -107,162 +107,530 @@ content="width=device-width, initial-scale=1.0">
 <title>TikStream</title>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-body {
-    background: #000;
-    color: white;
-    font-family: Arial, sans-serif;
+:root {
+    --bg: #050505;
+    --card: #111111;
+    --card2: #181818;
+    --text: #ffffff;
+    --muted: #a7a7a7;
+    --accent: #ff2d55;
+    --accent2: #7c3aed;
+    --border: rgba(255,255,255,0.08);
+    --shadow: 0 20px 60px rgba(0,0,0,0.45);
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(255,45,85,0.13), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(124,58,237,0.12), transparent 30%),
+        var(--bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+/* =========================
+   TOP NAVIGATION
+   ========================= */
+
+nav,
+.navbar,
 header {
-    height: 60px;
-    background: #111;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    min-height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 15px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
+    padding: 12px 22px;
+    background: rgba(5,5,5,0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+}
+
+nav a,
+.navbar a,
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+nav a:hover,
+.navbar a:hover,
+header a:hover {
+    color: #ff4d6d;
+}
+
+/* Logo */
+
+.logo,
+nav h1,
+.navbar h1 {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
 }
 
 .logo {
-    font-size: 23px;
-    font-weight: bold;
+    background: linear-gradient(90deg, #ff2d55, #ff4f81, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.header-buttons {
-    display: flex;
-    gap: 8px;
+/* =========================
+   MAIN CONTAINER
+   ========================= */
+
+main,
+.container {
+    width: min(1100px, 94%);
+    margin: 0 auto;
+    padding: 35px 0 100px;
 }
 
-button,
-.btn {
-    background: white;
-    color: black;
-    border: none;
-    border-radius: 9px;
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    text-decoration: none;
-    cursor: pointer;
+/* =========================
+   HERO / WELCOME
+   ========================= */
+
+.hero {
+    position: relative;
+    text-align: center;
+    padding: 70px 20px 55px;
+    margin-bottom: 35px;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg,
+            rgba(255,45,85,0.12),
+            rgba(124,58,237,0.10),
+            rgba(0,0,0,0.2));
+    box-shadow: var(--shadow);
 }
 
-.login-btn {
-    background: #333;
-    color: white;
+.hero h1 {
+    font-size: clamp(38px, 8vw, 76px);
+    line-height: 0.95;
+    font-weight: 950;
+    letter-spacing: -4px;
+    margin-bottom: 18px;
 }
 
-.signup-btn {
-    background: white;
-    color: black;
+.hero p {
+    max-width: 650px;
+    margin: auto;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.6;
 }
 
-.feed {
-    padding-top: 70px;
+/* =========================
+   VIDEO FEED
+   ========================= */
+
+.video-grid,
+.videos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+    margin-top: 25px;
 }
 
-.video-card {
-    height: calc(100vh - 60px);
-    min-height: 500px;
+.video-card,
+.video {
     position: relative;
     overflow: hidden;
-    background: #111;
-    margin-bottom: 5px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.35);
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 
-.video-card video {
+.video-card:hover,
+.video:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,45,85,0.4);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.55);
+}
+
+video {
+    display: block;
     width: 100%;
-    height: 100%;
+    max-height: 650px;
+    background: #000;
     object-fit: cover;
 }
 
-.info {
-    position: absolute;
-    left: 15px;
-    bottom: 25px;
-    right: 90px;
-    z-index: 5;
-    text-shadow: 0 2px 5px black;
+/* =========================
+   VIDEO INFORMATION
+   ========================= */
+
+.video-info {
+    padding: 16px;
 }
 
-.username {
-    font-size: 19px;
-    font-weight: bold;
+.video-info h2,
+.video-info h3 {
+    font-size: 17px;
+    margin-bottom: 7px;
+}
+
+.video-info p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* =========================
+   UPLOAD PANEL
+   ========================= */
+
+.upload,
+.upload-box {
+    width: 100%;
+    margin: 30px auto;
+    padding: 28px;
+    border-radius: 24px;
+    background:
+        linear-gradient(145deg,
+            rgba(255,255,255,0.06),
+            rgba(255,255,255,0.025));
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.upload h2,
+.upload-box h2 {
+    font-size: 24px;
     margin-bottom: 8px;
 }
 
-.profile {
-    max-width: 500px;
-    margin: 100px auto;
-    padding: 25px;
-    background: #111;
-    border-radius: 15px;
-}
-
-.profile h1 {
+.upload p,
+.upload-box p {
+    color: var(--muted);
     margin-bottom: 20px;
 }
 
-.form-box {
-    max-width: 450px;
-    margin: 100px auto;
-    padding: 25px;
-    background: #111;
-    border-radius: 15px;
-}
+/* File picker */
 
-.form-box h1 {
-    margin-bottom: 20px;
-}
-
-input {
+input[type="file"] {
     width: 100%;
     padding: 14px;
-    margin: 8px 0 15px;
+    border-radius: 14px;
+    border: 1px dashed rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+    color: white;
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 11px 17px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
+    background: white;
+    color: #111;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+button,
+.btn,
+input[type="submit"] {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 13px 22px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ff2d55, #ff4f81);
+    color: white;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 8px 25px rgba(255,45,85,0.25);
+    transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
+}
+
+button:hover,
+.btn:hover,
+input[type="submit"]:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 12px 32px rgba(255,45,85,0.35);
+}
+
+button:active,
+.btn:active,
+input[type="submit"]:active {
+    transform: scale(.97);
+}
+
+/* =========================
+   FORMS
+   ========================= */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea,
+select {
+    width: 100%;
+    padding: 15px 17px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    outline: none;
+    background: #0d0d0d;
+    color: white;
+    font-size: 16px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: rgba(255,45,85,0.7);
+    box-shadow: 0 0 0 4px rgba(255,45,85,0.10);
+}
+
+textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* =========================
+   AUTH CARDS
+   ========================= */
+
+.auth-card,
+.login-card,
+.signup-card {
+    width: min(460px, 94%);
+    margin: 70px auto;
+    padding: 35px;
+    border-radius: 28px;
+    background:
+        linear-gradient(145deg,
+            rgba(255,255,255,0.07),
+            rgba(255,255,255,0.025));
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.auth-card h1,
+.login-card h1,
+.signup-card h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 25px;
+}
+
+/* =========================
+   USER PROFILE
+   ========================= */
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid var(--border);
+}
+
+.avatar {
+    width: 55px;
+    height: 55px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff2d55, #7c3aed);
+    font-size: 22px;
+    font-weight: 900;
+}
+
+/* =========================
+   MESSAGES / ALERTS
+   ========================= */
+
+.message,
+.alert {
+    padding: 14px 17px;
+    margin: 15px 0;
+    border-radius: 13px;
+    background: rgba(255,45,85,0.10);
+    border: 1px solid rgba(255,45,85,0.25);
+    color: #ffd6df;
+}
+
+/* =========================
+   EMPTY STATE
+   ========================= */
+
+.empty-state,
+.no-videos {
+    text-align: center;
+    padding: 80px 20px;
+    border-radius: 25px;
+    border: 1px dashed rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.025);
+}
+
+.empty-state h2,
+.no-videos h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.empty-state p,
+.no-videos p {
+    color: var(--muted);
     font-size: 16px;
 }
 
-.form-box button {
-    width: 100%;
-    margin-top: 5px;
+/* =========================
+   LINKS
+   ========================= */
+
+a {
+    color: #ff5a7d;
+    transition: color .2s ease;
 }
 
-.message {
-    background: #222;
-    padding: 12px;
-    margin: 10px;
-    border-radius: 8px;
-    text-align: center;
+a:hover {
+    color: #ff9ab0;
 }
 
-.upload {
-    padding: 15px;
-    background: #111;
-    text-align: center;
+/* =========================
+   SCROLLBAR
+   ========================= */
+
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-.upload input {
-    background: white;
+::-webkit-scrollbar-track {
+    background: #050505;
 }
 
-.nav-link {
-    color: white;
-    text-decoration: none;
-    margin-left: 10px;
+::-webkit-scrollbar-thumb {
+    background: #292929;
+    border-radius: 20px;
 }
 
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
+
+/* =========================
+   MOBILE DESIGN
+   ========================= */
+
+@media (max-width: 700px) {
+
+    nav,
+    .navbar,
+    header {
+        min-height: 62px;
+        padding: 10px 14px;
+    }
+
+    .logo,
+    nav h1,
+    .navbar h1 {
+        font-size: 23px;
+    }
+
+    main,
+    .container {
+        width: 94%;
+        padding-top: 20px;
+    }
+
+    .hero {
+        padding: 50px 18px;
+        border-radius: 22px;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+        letter-spacing: -2.5px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .video-grid,
+    .videos {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .upload,
+    .upload-box,
+    .auth-card,
+    .login-card,
+    .signup-card {
+        padding: 22px;
+        border-radius: 20px;
+    }
+
+    video {
+        max-height: 75vh;
+    }
+
+    button,
+    .btn,
+    input[type="submit"] {
+        width: 100%;
+        padding: 14px;
+    }
+}
+
+/* =========================
+   SMALL PHONE
+   ========================= */
+
+@media (max-width: 380px) {
+
+    .hero h1 {
+        font-size: 40px;
+    }
+
+    .hero {
+        padding: 40px 14px;
+    }
+
+    .upload,
+    .upload-box {
+        padding: 17px;
+    }
+}
 </style>
 
 </head>
