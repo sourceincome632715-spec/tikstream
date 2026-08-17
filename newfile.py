@@ -56,7 +56,16 @@ def init_db():
             password TEXT NOT NULL
         )
     """)
-
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS profiles (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER UNIQUE NOT NULL,
+            display_name TEXT,
+            bio TEXT DEFAULT '',
+            avatar_url TEXT DEFAULT '',
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """)
     conn.commit()
     conn.close()
 
