@@ -150,54 +150,204 @@ body {
 }
 
 /* =========================
-   TOP NAVIGATION
+   CLEAN TIKSTREAM HEADER
    ========================= */
 
-nav,
-.navbar,
 header {
     position: sticky;
     top: 0;
     z-index: 1000;
+
     width: 100%;
-    min-height: 70px;
+    min-height: 68px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 22px;
-    background: rgba(5,5,5,0.88);
+
+    gap: 16px;
+    padding: 10px 20px;
+
+    background: rgba(5, 5, 5, 0.92);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    border-bottom: 1px solid var(--border);
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-nav a,
-.navbar a,
-header a {
-    color: white;
-    text-decoration: none;
-}
+/* TikStream logo */
 
-nav a:hover,
-.navbar a:hover,
-header a:hover {
-    color: #ff4d6d;
-}
+.logo {
+    flex-shrink: 0;
 
-/* Logo */
-
-.logo,
-nav h1,
-.navbar h1 {
     font-size: 28px;
     font-weight: 900;
     letter-spacing: -1.5px;
-}
 
-.logo {
-    background: linear-gradient(90deg, #ff2d55, #ff4f81, #8b5cf6);
+    background: linear-gradient(
+        90deg,
+        #ff2d55,
+        #ff4f81,
+        #8b5cf6
+    );
+
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+/* Navigation button container */
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Normal navigation links */
+
+.header-buttons .nav-link {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 9px 11px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    border-radius: 10px;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.header-buttons .nav-link:hover {
+    color: #ffffff;
+    background: rgba(255,45,85,0.12);
+    transform: translateY(-1px);
+}
+
+/* Username link */
+
+.header-buttons .nav-link:last-of-type {
+    color: #ff6b8a;
+}
+
+/* Login / Signup / Logout buttons */
+
+.header-buttons .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 16px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    border-radius: 12px;
+
+    background: linear-gradient(
+        135deg,
+        #ff2d55,
+        #ff4f81
+    );
+
+    font-size: 14px;
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    box-shadow: 0 7px 20px rgba(255,45,85,0.22);
+
+    transition:
+        transform .2s ease,
+        filter .2s ease,
+        box-shadow .2s ease;
+}
+
+.header-buttons .btn:hover {
+    color: #ffffff;
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 10px 28px rgba(255,45,85,0.35);
+}
+
+/* =========================
+   MOBILE HEADER
+   ========================= */
+
+@media (max-width: 700px) {
+
+    header {
+        min-height: 62px;
+
+        padding: 9px 12px;
+
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 22px;
+        letter-spacing: -1px;
+    }
+
+    .header-buttons {
+        gap: 4px;
+
+        justify-content: flex-end;
+    }
+
+    .header-buttons .nav-link {
+        padding: 7px 6px;
+
+        font-size: 12px;
+    }
+
+    .header-buttons .btn {
+        padding: 9px 12px;
+
+        font-size: 12px;
+
+        border-radius: 10px;
+    }
+}
+
+/* =========================
+   VERY SMALL PHONES
+   ========================= */
+
+@media (max-width: 430px) {
+
+    header {
+        align-items: center;
+        padding: 8px 10px;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .header-buttons {
+        gap: 3px;
+    }
+
+    .header-buttons .nav-link {
+        font-size: 11px;
+        padding: 6px 4px;
+    }
+
+    .header-buttons .btn {
+        font-size: 11px;
+        padding: 8px 10px;
+    }
 }
 
 /* =========================
