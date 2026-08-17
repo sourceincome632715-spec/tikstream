@@ -1046,7 +1046,352 @@ Already have an account?
 </body>
 </html>
 """
+# ------------------------------
+# PROFILE
+# ------------------------------
 
+@app.route("/profile")
+def profile():
+    user = current_user()
+
+    if not user:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+
+    profile = conn.execute(
+        "SELECT * FROM profiles WHERE user_id = ?",
+        (user["id"],)
+    ).fetchone()
+
+    # Create profile automatically if it doesn't exist
+    if not profile:
+        conn.execute(
+            """
+            INSERT INTO profiles
+            (user_id, display_name, bio, avatar_url)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                user["id"],
+                user["username"],
+                "Welcome to my TikStream profile!",
+                ""
+            )
+        )
+        conn.commit()
+
+        profile = conn.execute(
+            "SELECT * FROM profiles WHERE user_id = ?",
+            (user["id"],)
+        ).fetchone()
+
+    conn.close()
+
+    # Find this user's videos
+    videos = []
+
+    if os.path.exists(UPLOAD_FOLDER):
+        all_videos = [
+            f for f in os.listdir(UPLOAD_FOLDER)
+            if allowed_file(f)
+        ]
+
+        username = user["username"]
+
+        videos = [
+            f for f in all_videos
+            if f.startswith(username + "_")
+        ]
+
+    profile_html = """
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>{{ profile['display_name'] }} - TikStream</title>
+
+<style>
+
+body {
+    margin:0;
+    background:#000;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+.header {
+    padding:18px;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    border-bottom:1px solid #333;
+}
+
+.profile {
+    max-width:700px;
+    margin:auto;
+    padding:25px 18px;
+}
+
+.top {
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.avatar {
+    width:95px;
+    height:95px;
+    border-radius:50%;
+    background:#333;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    overflow:hidden;
+}
+
+.avatar img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.username {
+    font-size:23px;
+    font-weight:bold;
+}
+
+.stats {
+    display:flex;
+    gap:25px;
+    margin-top:15px;
+}
+
+.stat {
+    text-align:center;
+}
+
+.stat b {
+    display:block;
+    font-size:19px;
+}
+
+.stat span {
+    color:#aaa;
+    font-size:13px;
+}
+
+.bio {
+    margin-top:20px;
+    color:#ddd;
+}
+
+.buttons {
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.button {
+    flex:1;
+    padding:11px;
+    border:0;
+    border-radius:8px;
+    background:#222;
+    color:white;
+    font-weight:bold;
+    text-align:center;
+    text-decoration:none;
+}
+
+.posts-title {
+    margin-top:35px;
+    padding:15px 0;
+    border-top:1px solid #333;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:3px;
+}
+
+.grid video {
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    background:#111;
+}
+
+.empty {
+    color:#777;
+    text-align:center;
+    padding:40px 10px;
+}
+
+.story {
+    margin-top:25px;
+}
+
+.story-circle {
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    border:3px solid #ff2d55;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+}
+
+.story-label {
+    margin-top:5px;
+    font-size:12px;
+    color:#aaa;
+}
+
+.back {
+    display:block;
+    margin-top:30px;
+    text-align:center;
+    color:#aaa;
+    text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    👤 {{ profile['display_name'] }}
+</div>
+
+<div class="profile">
+
+    <div class="top">
+
+        <div class="avatar">
+
+            {% if profile['avatar_url'] %}
+                <img src="{{ profile['avatar_url'] }}">
+            {% else %}
+                👤
+            {% endif %}
+
+        </div>
+
+        <div>
+
+            <div class="username">
+                @{{ user['username'] }}
+            </div>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <b>{{ videos|length }}</b>
+                    <span>Posts</span>
+                </div>
+
+                <div class="stat">
+                    <b>0</b>
+                    <span>Followers</span>
+                </div>
+
+                <div class="stat">
+                    <b>0</b>
+                    <span>Following</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="bio">
+        {{ profile['bio'] }}
+    </div>
+
+    <div class="buttons">
+
+        <a class="button" href="#">
+            ✏️ Edit Profile
+        </a>
+
+        <a class="button" href="/">
+            🎬 Videos
+        </a>
+
+    </div>
+
+    <div class="story">
+
+        <div class="story-circle">
+            +
+        </div>
+
+        <div class="story-label">
+            Add Story
+        </div>
+
+    </div>
+
+    <div class="posts-title">
+        📱 Posts & Reels
+    </div>
+
+    {% if videos %}
+
+        <div class="grid">
+
+        {% for video in videos %}
+
+            <video controls preload="metadata">
+                <source
+                    src="/uploads/{{ video }}"
+                    type="video/mp4">
+            </video>
+
+        {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            🎬 No posts yet
+            <br><br>
+            Upload your first video!
+        </div>
+
+    {% endif %}
+
+    <a class="back" href="/">
+        ← Back to TikStream
+    </a>
+
+</div>
+
+</body>
+</html>
+"""
+
+    return render_template_string(
+        profile_html,
+        user=user,
+        profile=profile,
+        videos=videos
+    )
 
 # -----------------------------
 # LOGIN
