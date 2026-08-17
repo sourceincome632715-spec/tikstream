@@ -858,57 +858,6 @@ def home():
         user=user,
         message=message
     )
-# --------------------------------
-# LOGIN
-# --------------------------------
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        username = request.form.get("username", "").strip()
-        password = request.form.get("password", "")
-
-        user = User.query.filter_by(username=username).first()
-
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            return redirect(url_for("home"))
-
-        return render_template_string("""
-        <h2>Login failed</h2>
-        <p>Invalid username or password.</p>
-        <a href="/login">Try again</a>
-        """)
-
-    return render_template_string("""
-    <h2>Login to TikStream</h2>
-
-    <form method="POST">
-        <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            required
-        >
-
-        <br><br>
-
-        <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-        >
-
-        <br><br>
-
-        <button type="submit">Login</button>
-    </form>
-
-    <br>
-
-    <a href="/">Back to TikStream</a>
-    """)
 
 # -----------------------------
 # SIGN UP
