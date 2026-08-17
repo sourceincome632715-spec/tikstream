@@ -997,7 +997,7 @@ a {
 </div>
 {% endif %}
 
-<form method="POST">
+<form method="POST" action="/signup">
 
 <label>Username</label>
 
