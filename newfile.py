@@ -661,6 +661,11 @@ Home
 {% if user %}
 
 <a class="nav-link"
+href="/profile">
+Profile
+</a>
+
+<a class="nav-link"
 href="/profile/{{ user['username'] }}">
 @{{ user['username'] }}
 </a>
