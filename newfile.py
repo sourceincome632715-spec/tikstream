@@ -697,21 +697,53 @@ Sign Up
 
 <div class="video-card">
 
-<video controls playsinline preload="metadata">
+    <video
+        controls
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+    >
+        <source
+            src="{{ url_for('uploaded_file', filename=video) }}"
+            type="video/mp4"
+        >
+        Your browser does not support video.
+    </video>
 
-<source
-src="{{ url_for('uploaded_file', filename=video) }}"
-type="video/mp4">
+    <div class="info">
 
-Your browser does not support video.
+        <div class="username">
+            @{{ video.split('_')[0] }}
+        </div>
 
-</video>
+        <div style="display:flex; gap:10px; margin-top:12px;">
 
-<div class="info">
+            <button
+                onclick="this.classList.toggle('liked'); this.innerText = this.classList.contains('liked') ? '❤️ Liked' : '❤️ Like';"
+                style="border:0; border-radius:20px; padding:9px 14px; background:#222; color:white; font-weight:600;"
+            >
+                ❤️ Like
+            </button>
 
-<div class="username">
-@{{ video.split('_')[0] }}
-</div>
+            <button
+                onclick="commentVideo('{{ video }}')"
+                style="border:0; border-radius:20px; padding:9px 14px; background:#222; color:white; font-weight:600;"
+            >
+                💬 Comment
+            </button>
+
+            <button
+                onclick="shareVideo('{{ video }}')"
+                style="border:0; border-radius:20px; padding:9px 14px; background:#222; color:white; font-weight:600;"
+            >
+                ↗️ Share
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
