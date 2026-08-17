@@ -1392,7 +1392,267 @@ body {
         profile=profile,
         videos=videos
     )
+# ------------------------------
+# PROFILE PAGE
+# ------------------------------
 
+PROFILE_HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>{{ profile["username"] }} - TikStream</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 1px solid #222;
+            background: #080808;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #ff2d68;
+        }
+
+        .back {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .profile {
+            max-width: 650px;
+            margin: auto;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff2d68;
+            background: #222;
+        }
+
+        .avatar-placeholder {
+            width: 110px;
+            height: 110px;
+            margin: auto;
+            border-radius: 50%;
+            background: #222;
+            border: 3px solid #ff2d68;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 45px;
+        }
+
+        h1 {
+            margin: 15px 0 5px;
+        }
+
+        .username {
+            color: #aaa;
+            font-size: 16px;
+        }
+
+        .bio {
+            margin: 15px auto;
+            color: #ddd;
+            max-width: 450px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 45px;
+            margin: 25px 0;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 20px;
+        }
+
+        .stat span {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .edit-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: #151515;
+            border-radius: 18px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            margin: 8px 0;
+            border: 0;
+            border-radius: 10px;
+            background: #252525;
+            color: white;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 8px;
+            border: 0;
+            border-radius: 12px;
+            background: #ff2d68;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .content {
+            margin-top: 35px;
+            padding: 30px 10px;
+            border-top: 1px solid #222;
+        }
+
+        .content h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty {
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">TikStream</div>
+
+        <a class="back" href="/">
+            ← Home
+        </a>
+    </div>
+
+    <div class="profile">
+
+        {% if profile["avatar_url"] %}
+            <img
+                class="avatar"
+                src="{{ profile['avatar_url'] }}"
+                alt="Profile picture">
+        {% else %}
+            <div class="avatar-placeholder">
+                👤
+            </div>
+        {% endif %}
+
+        <h1>
+            {{ profile["display_name"] or profile["username"] }}
+        </h1>
+
+        <div class="username">
+            @{{ profile["username"] }}
+        </div>
+
+        {% if profile["bio"] %}
+            <div class="bio">
+                {{ profile["bio"] }}
+            </div>
+        {% endif %}
+
+        <div class="stats">
+
+            <div class="stat">
+                <strong>0</strong>
+                <span>Posts</span>
+            </div>
+
+            <div class="stat">
+                <strong>0</strong>
+                <span>Followers</span>
+            </div>
+
+            <div class="stat">
+                <strong>0</strong>
+                <span>Following</span>
+            </div>
+
+        </div>
+
+        <div class="edit-box">
+
+            <h2>Edit Profile</h2>
+
+            <form method="POST">
+
+                <input
+                    type="text"
+                    name="display_name"
+                    placeholder="Display name"
+                    value="{{ profile['display_name'] or '' }}">
+
+                <textarea
+                    name="bio"
+                    placeholder="Write something about yourself...">{{ profile["bio"] or "" }}</textarea>
+
+                <input
+                    type="url"
+                    name="avatar_url"
+                    placeholder="Profile picture URL"
+                    value="{{ profile['avatar_url'] or '' }}">
+
+                <button type="submit">
+                    Save Profile
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="content">
+
+            <h2>Posts & Reels</h2>
+
+            <div class="empty">
+                No posts or reels yet.
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+"""
 # -----------------------------
 # LOGIN
 # -----------------------------
