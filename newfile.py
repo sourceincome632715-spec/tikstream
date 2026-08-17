@@ -787,7 +787,47 @@ Upload Video
 </div>
 
 {% endif %}
+<script>
+function commentVideo(video) {
+    const comment = prompt("💬 Write your comment:");
 
+    if (!comment || !comment.trim()) {
+        return;
+    }
+
+    const key = "tikstream_comments_" + video;
+    let comments = JSON.parse(localStorage.getItem(key) || "[]");
+
+    comments.push({
+        text: comment.trim(),
+        time: new Date().toLocaleString()
+    });
+
+    localStorage.setItem(key, JSON.stringify(comments));
+
+    alert("💬 Comment added successfully!");
+}
+
+function shareVideo(video) {
+    const shareUrl = window.location.origin + "/";
+
+    if (navigator.share) {
+        navigator.share({
+            title: "TikStream",
+            text: "Check out this video on TikStream! 🎥",
+            url: shareUrl
+        }).catch(function() {});
+    } else {
+        navigator.clipboard.writeText(shareUrl)
+            .then(function() {
+                alert("🔗 TikStream link copied!");
+            })
+            .catch(function() {
+                prompt("Copy this link:", shareUrl);
+            });
+    }
+}
+</script>
 </body>
 </html>
 """
