@@ -1981,7 +1981,7 @@ def logout():
             message="You have been logged out."
         )
     )
-
+    
 
 # -----------------------------
 # PROFILE
