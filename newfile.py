@@ -1201,6 +1201,214 @@ Already have an account?
 </body>
 </html>
 """
+
+# -----------------------------
+# EDIT PROFILE
+# -----------------------------
+
+@app.route("/edit-profile", methods=["GET", "POST"])
+def edit_profile():
+
+    user = current_user()
+
+    if not user:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+
+    profile = conn.execute(
+        "SELECT * FROM profiles WHERE user_id = ?",
+        (user["id"],)
+    ).fetchone()
+
+    if not profile:
+        conn.execute(
+            """
+            INSERT INTO profiles
+            (user_id, display_name, bio, avatar_url)
+            VALUES (?, ?, ?, ?)
+            """,
+            (user["id"], user["username"], "", "")
+        )
+        conn.commit()
+
+        profile = conn.execute(
+            "SELECT * FROM profiles WHERE user_id = ?",
+            (user["id"],)
+        ).fetchone()
+
+    if request.method == "POST":
+
+        display_name = request.form.get(
+            "display_name", ""
+        ).strip()
+
+        bio = request.form.get(
+            "bio", ""
+        ).strip()
+
+        avatar_url = request.form.get(
+            "avatar_url", ""
+        ).strip()
+
+        conn.execute(
+            """
+            UPDATE profiles
+            SET display_name = ?,
+                bio = ?,
+                avatar_url = ?
+            WHERE user_id = ?
+            """,
+            (
+                display_name,
+                bio,
+                avatar_url,
+                user["id"]
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("profile"))
+
+    conn.close()
+
+    EDIT_PROFILE_HTML = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Profile - TikStream</title>
+
+    <style>
+
+    body {
+        margin: 0;
+        background: #000;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    .box {
+        width: min(500px, 90%);
+        margin: 60px auto;
+        padding: 30px;
+        background: #111;
+        border-radius: 20px;
+        border: 1px solid #292929;
+    }
+
+    h1 {
+        margin-bottom: 25px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: bold;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px;
+        margin-bottom: 20px;
+        border: 1px solid #333;
+        border-radius: 10px;
+        background: #181818;
+        color: white;
+        font-size: 16px;
+    }
+
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        border: 0;
+        border-radius: 12px;
+        background: linear-gradient(
+            135deg,
+            #ff2d55,
+            #ff4f81
+        );
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .back {
+        display: block;
+        margin-top: 18px;
+        text-align: center;
+        color: #ff5a7d;
+        text-decoration: none;
+    }
+
+    </style>
+
+    </head>
+
+    <body>
+
+    <div class="box">
+
+        <h1>✏️ Edit Profile</h1>
+
+        <form method="POST">
+
+            <label>Display Name</label>
+
+            <input
+                type="text"
+                name="display_name"
+                value="{{ profile['display_name'] or '' }}"
+                placeholder="Your display name">
+
+            <label>Bio</label>
+
+            <textarea
+                name="bio"
+                placeholder="Tell people about yourself...">{{ profile['bio'] or '' }}</textarea>
+
+            <label>Profile Picture URL</label>
+
+            <input
+                type="text"
+                name="avatar_url"
+                value="{{ profile['avatar_url'] or '' }}"
+                placeholder="https://example.com/photo.jpg">
+
+            <button type="submit">
+                💾 Save Profile
+            </button>
+
+        </form>
+
+        <a class="back" href="/profile">
+            ← Back to Profile
+        </a>
+
+    </div>
+
+    </body>
+    </html>
+    """
+
+    return render_template_string(
+        EDIT_PROFILE_HTML,
+        profile=profile
+    )
+
 # ------------------------------
 # PROFILE
 # ------------------------------
