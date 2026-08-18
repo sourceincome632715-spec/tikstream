@@ -1479,8 +1479,8 @@ body {
 
     <div class="buttons">
 
-        <a class="button" href="#">
-            ✏️ Edit Profile
+        <a class="button" href="/edit-profile">
+             ✏️ Edit Profile
         </a>
 
         <a class="button" href="/">
