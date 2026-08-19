@@ -1390,7 +1390,15 @@ conn.execute(
 
         <h1>✏️ Edit Profile</h1>
 
-        <form method="POST">
+     <form method="POST" enctype="multipart/form-data">
+
+<label>Profile Picture</label>
+
+<input
+    type="file"
+    name="avatar"
+    accept="image/*"
+>
 
             <label>Display Name</label>
 
