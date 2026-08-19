@@ -1251,32 +1251,6 @@ def edit_profile():
     "avatar_url", ""
 ).strip()
 
-avatar = request.files.get("avatar")
-
-if avatar and avatar.filename:
-
-    avatar_filename = secure_filename(avatar.filename)
-
-    avatar_name, avatar_extension = os.path.splitext(
-        avatar_filename
-    )
-
-    avatar_filename = (
-        f"{user['username']}_avatar{avatar_extension}"
-    )
-
-    avatar.save(
-        os.path.join(
-            UPLOAD_FOLDER,
-            avatar_filename
-        )
-    )
-
-    avatar_url = url_for(
-        "uploaded_file",
-        filename=avatar_filename
-    )
-
 conn.execute(
     """
     UPDATE profiles
@@ -1390,15 +1364,7 @@ conn.execute(
 
         <h1>✏️ Edit Profile</h1>
 
-     <form method="POST" enctype="multipart/form-data">
-
-<label>Profile Picture</label>
-
-<input
-    type="file"
-    name="avatar"
-    accept="image/*"
->
+   <form method="POST">
 
             <label>Display Name</label>
 
