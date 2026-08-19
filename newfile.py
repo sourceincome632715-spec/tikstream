@@ -1755,6 +1755,213 @@ body {
         profile=profile,
         videos=videos
     )
+
+@app.route("/edit-profile", methods=["GET", "POST"])
+def edit_profile():
+    user = current_user()
+
+    if not user:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+
+    profile = conn.execute(
+        "SELECT * FROM profiles WHERE user_id = ?",
+        (user["id"],)
+    ).fetchone()
+
+    if not profile:
+        conn.execute(
+            """
+            INSERT INTO profiles
+            (user_id, display_name, bio, avatar_url)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                user["id"],
+                user["username"],
+                "Welcome to my TikStream profile!",
+                ""
+            )
+        )
+        conn.commit()
+
+        profile = conn.execute(
+            "SELECT * FROM profiles WHERE user_id = ?",
+            (user["id"],)
+        ).fetchone()
+
+    if request.method == "POST":
+
+        display_name = request.form.get("display_name", "").strip()
+        bio = request.form.get("bio", "").strip()
+        avatar_url = request.form.get("avatar_url", "").strip()
+
+        if not display_name:
+            display_name = user["username"]
+
+        conn.execute(
+            """
+            UPDATE profiles
+            SET display_name = ?,
+                bio = ?,
+                avatar_url = ?
+            WHERE user_id = ?
+            """,
+            (
+                display_name,
+                bio,
+                avatar_url,
+                user["id"]
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("profile"))
+
+    conn.close()
+
+    edit_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Edit Profile - TikStream</title>
+
+        <style>
+
+            body {
+                margin: 0;
+                background: #000;
+                color: white;
+                font-family: Arial, sans-serif;
+            }
+
+            .header {
+                padding: 18px;
+                text-align: center;
+                font-size: 22px;
+                font-weight: bold;
+                border-bottom: 1px solid #333;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: auto;
+                padding: 25px 18px;
+            }
+
+            label {
+                display: block;
+                margin-top: 20px;
+                margin-bottom: 8px;
+                font-weight: bold;
+            }
+
+            input,
+            textarea {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 13px;
+                border: 1px solid #444;
+                border-radius: 8px;
+                background: #181818;
+                color: white;
+                font-size: 16px;
+            }
+
+            textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+            .save {
+                width: 100%;
+                margin-top: 25px;
+                padding: 14px;
+                border: 0;
+                border-radius: 8px;
+                background: #ff2d55;
+                color: white;
+                font-size: 17px;
+                font-weight: bold;
+            }
+
+            .back {
+                display: block;
+                margin-top: 20px;
+                text-align: center;
+                color: #aaa;
+                text-decoration: none;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="header">
+            ✏️ Edit Profile
+        </div>
+
+        <div class="container">
+
+            <form method="POST">
+
+                <label>Display Name</label>
+
+                <input
+                    type="text"
+                    name="display_name"
+                    value="{{ profile['display_name'] }}"
+                    maxlength="50"
+                    required
+                >
+
+                <label>Bio</label>
+
+                <textarea
+                    name="bio"
+                    maxlength="200"
+                    placeholder="Tell people about yourself..."
+                >{{ profile['bio'] }}</textarea>
+
+                <label>Avatar URL</label>
+
+                <input
+                    type="url"
+                    name="avatar_url"
+                    value="{{ profile['avatar_url'] }}"
+                    placeholder="https://example.com/photo.jpg"
+                >
+
+                <button class="save" type="submit">
+                    💾 Save Profile
+                </button>
+
+            </form>
+
+            <a class="back" href="/profile">
+                ← Back to Profile
+            </a>
+
+        </div>
+
+    </body>
+    </html>
+    """
+
+    return render_template_string(
+        edit_html,
+        profile=profile
+    )
+
 # ------------------------------
 # PROFILE PAGE
 # ------------------------------
