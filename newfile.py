@@ -1248,24 +1248,50 @@ def edit_profile():
         ).strip()
 
         avatar_url = request.form.get(
-            "avatar_url", ""
-        ).strip()
+    "avatar_url", ""
+).strip()
 
-        conn.execute(
-            """
-            UPDATE profiles
-            SET display_name = ?,
-                bio = ?,
-                avatar_url = ?
-            WHERE user_id = ?
-            """,
-            (
-                display_name,
-                bio,
-                avatar_url,
-                user["id"]
-            )
+avatar = request.files.get("avatar")
+
+if avatar and avatar.filename:
+
+    avatar_filename = secure_filename(avatar.filename)
+
+    avatar_name, avatar_extension = os.path.splitext(
+        avatar_filename
+    )
+
+    avatar_filename = (
+        f"{user['username']}_avatar{avatar_extension}"
+    )
+
+    avatar.save(
+        os.path.join(
+            UPLOAD_FOLDER,
+            avatar_filename
         )
+    )
+
+    avatar_url = url_for(
+        "uploaded_file",
+        filename=avatar_filename
+    )
+
+conn.execute(
+    """
+    UPDATE profiles
+    SET display_name = ?,
+        bio = ?,
+        avatar_url = ?
+    WHERE user_id = ?
+    """,
+    (
+        display_name,
+        bio,
+        avatar_url,
+        user["id"]
+    )
+)
 
         conn.commit()
         conn.close()
