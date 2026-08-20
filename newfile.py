@@ -1247,19 +1247,25 @@ def edit_profile():
             "bio", ""
         ).strip()
 
-        avatar_url = request.form.get(
-    "avatar_url", ""
-).strip()
+                avatar_url = request.form.get(
+            "avatar_url", ""
+        ).strip()
 
-conn.execute(
-    """
-    UPDATE profiles
-    SET display_name = ?,
-        bio = ?,
-        avatar_url = ?
-    WHERE user_id = ?
-    """,
-    (
+        conn.execute(
+            """
+            UPDATE profiles
+            SET display_name = ?,
+                bio = ?,
+                avatar_url = ?
+            WHERE user_id = ?
+            """,
+            (
+                display_name,
+                bio,
+                avatar_url,
+                user["id"]
+            )
+        )
         display_name,
         bio,
         avatar_url,
